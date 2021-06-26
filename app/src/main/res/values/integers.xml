@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="dialog_card_config_title_max_lines">1</integer>
+    <integer name="dialog_card_config_url_max_lines">1</integer>
+    <integer name="rv_cards_item_title_max_lines">1</integer>
+</resources>

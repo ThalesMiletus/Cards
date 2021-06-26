@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ConfigDialogButtonsStyle" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/dialog_config_buttons_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/dialog_card_config_action_buttons_text_size</item>
+        <item name="android:padding">@dimen/dialog_card_config_action_buttons_paddings</item>
+    </style>
+
+    <style name="ConfigDialogEditTextsStyle" parent="android:Widget.EditText">
+        <item name="android:ellipsize">end</item>
+        <item name="android:imeActionLabel">Done</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">@integer/dialog_card_config_url_max_lines</item>
+    </style>
+</resources>
