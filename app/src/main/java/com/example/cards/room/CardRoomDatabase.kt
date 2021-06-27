@@ -51,11 +51,12 @@ abstract class CardRoomDatabase : RoomDatabase() {
             }
         }
 
-        suspend fun populateDatabase(wordDao: CardDao) {
+        suspend fun populateDatabase(cardDao: CardDao) {
             for (i in 1..AppConfig.CARD_RV_DEF_ITEM_COUNT) {
-                wordDao.insert(
+                cardDao.insert(
                     CardModel(
-                        AppConfig.CARD_RV_DEF_TITLE + " $i", AppConfig.CARD_RV_DEF_IMAGES_URL
+                        AppConfig.CARD_RV_DEF_TITLE + " $i",
+                        AppConfig.CARD_RV_DEF_IMAGES_URL
                                 + (i % AppConfig.CARD_RV_DEF_IMAGES_COUNT)
                     )
                 )

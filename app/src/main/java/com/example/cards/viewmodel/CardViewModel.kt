@@ -1,22 +1,33 @@
 package com.example.cards.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.*
 import com.example.cards.model.CardModel
 import com.example.cards.repository.CardRepository
 import kotlinx.coroutines.launch
 
-class CardViewModel(private val repository: CardRepository) : ViewModel() {
+class CardViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
-    val allCards: LiveData<List<CardModel>> = repository.allCards.asLiveData()
-    var selectedCard: MutableLiveData<CardModel> = MutableLiveData()
+    val allCards: LiveData<List<CardModel>> = cardRepository.allCards.asLiveData()
+    var editingCard: MutableLiveData<CardModel> = MutableLiveData()
 
-
-    fun insert(cardModel: CardModel) = viewModelScope.launch {
-        repository.insert(cardModel)
+    fun insertCardToCardRepository(cardModel: CardModel) = viewModelScope.launch {
+        cardRepository.insert(cardModel)
     }
 
-    fun onCardItemClicked(card: CardModel) {
-        selectedCard.value = card
+    fun setAdjustingCardItem(card: CardModel?) {
+        editingCard.value = card
+    }
+
+    fun setAdjustingCardItemUrl(imageUri: Uri?) {
+        imageUri?.let {
+            val card: CardModel? = editingCard.value?.copy()
+            card?.apply {
+                imageUrl = imageUri.toString()
+                id = editingCard.value?.id
+                editingCard.value = this
+            }
+        }
     }
 }
 

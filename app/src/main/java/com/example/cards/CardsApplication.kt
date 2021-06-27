@@ -9,6 +9,6 @@ import kotlinx.coroutines.SupervisorJob
 class CardsApplication : Application() {
     private val applicationScope = CoroutineScope(SupervisorJob())
 
-    val database by lazy { CardRoomDatabase.getDatabase(this, applicationScope) }
-    val repository by lazy { CardRepository(database.cardDao()) }
+    private val cardRoomDatabase by lazy { CardRoomDatabase.getDatabase(this, applicationScope) }
+    val cardRepository by lazy { CardRepository(cardRoomDatabase.cardDao()) }
 }

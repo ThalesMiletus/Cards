@@ -19,27 +19,30 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val card = getItem(position)
-        holder.bind(card, cardViewModel)
+        holder.bind(getItem(position), cardViewModel)
     }
 
     class CardViewHolder(view: RvItemCardBinding) : RecyclerView.ViewHolder(view.root) {
 
         private var binding: RvItemCardBinding = view
 
-        fun bind(card: CardModel, cardViewModel: CardViewModel) {
-            binding.card = card
-            binding.cardViewModel = cardViewModel
-            binding.edtCardTitle.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    binding.edtCardTitle.hideKeyboard()
-                    binding.edtCardTitle.clearFocus()
-                    card.title = binding.edtCardTitle.text.toString()
-                    cardViewModel.insert(card)
+        fun bind(cardModel: CardModel, viewModel: CardViewModel) {
+            binding.apply {
+                card = cardModel
+                cardViewModel = viewModel
+                edtCardTitle.apply {
+                    setOnEditorActionListener { _, actionId, _ ->
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            hideKeyboard()
+                            clearFocus()
+                            cardModel.title = text.toString()
+                            viewModel.insertCardToCardRepository(cardModel)
+                        }
+                        (actionId == EditorInfo.IME_ACTION_DONE)
+                    }
                 }
-                (actionId == EditorInfo.IME_ACTION_DONE)
+                executePendingBindings()
             }
-            binding.executePendingBindings()
         }
 
         companion object {

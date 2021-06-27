@@ -1,7 +1,6 @@
 package com.example.cards.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +10,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,15 +29,15 @@ class MainActivity : AppCompatActivity() {
         StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode == RESULT_OK) {
-            onImageSelectedFromGallery(result.data)
+            cardViewModel.setAdjustingCardItemUrl(result.data?.data)
         }
     }
 
     private val cardViewModel: CardViewModel by viewModels {
-        CardViewModelFactory((application as CardsApplication).repository)
+        CardViewModelFactory((application as CardsApplication).cardRepository)
     }
 
-    private val adapter by lazy {
+    private val cardsRvAdapter by lazy {
         CardListAdapter(cardViewModel)
     }
 
@@ -55,58 +55,60 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_add) {
-            showCardConfigurationDialog(null)
+            cardViewModel.setAdjustingCardItem(CardModel("", ""))
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initCardsRv() {
-        val recyclerView = findViewById<RecyclerView>(R.id.rv_cards)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = GridLayoutManager(this, AppConfig.CARD_RV_SPAN_COUNT)
+        findViewById<RecyclerView>(R.id.rv_cards).apply {
+            adapter = cardsRvAdapter
+            layoutManager = GridLayoutManager(this@MainActivity, AppConfig.CARD_RV_SPAN_COUNT)
+            itemAnimator = null
+        }
     }
 
     private fun initObservables() {
         cardViewModel.allCards.observe(this) { cards ->
-            cards.let { adapter.submitList(it) }
+            cards.let { cardsRvAdapter.submitList(it) }
         }
 
-        cardViewModel.selectedCard.observe(this) { card ->
-            card?.let {
-                showCardConfigurationDialog(card)
-            }
+        cardViewModel.editingCard.observe(this) { card ->
+            card?.let { showCardConfigurationDialog(card) }
         }
     }
 
-    private fun showCardConfigurationDialog(card: CardModel?) {
+    private fun showCardConfigurationDialog(card: CardModel) {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.dialog_card_configuration)
-        val title = bottomSheetDialog.findViewById<TextView>(R.id.edt_card_title)
-        val imageUrl = bottomSheetDialog.findViewById<TextView>(R.id.edt_card_image_url)
-        val imagePicker = bottomSheetDialog.findViewById<ImageView>(R.id.iv_card_image_picker)
-        card?.let {
-            title?.text = card.title
-            imageUrl?.text = card.imageUrl
-            imagePicker?.let { it1 ->
-                Glide.with(this)
-                    .load(card.imageUrl)
-                    .error(ContextCompat.getDrawable(this, R.drawable.tree))
-                    .into(it1)
-            }
+
+        val titleTextView = bottomSheetDialog.findViewById<AppCompatEditText>(R.id.edt_card_title)
+        titleTextView?.setText(card.title)
+
+        val imageUrlTextView =
+            bottomSheetDialog.findViewById<AppCompatEditText>(R.id.edt_card_image_url)
+        imageUrlTextView?.setText(card.imageUrl)
+
+        val imagePickerImageView =
+            bottomSheetDialog.findViewById<ImageView>(R.id.iv_card_image_picker)
+        imagePickerImageView?.let { imageView ->
+            Glide.with(this)
+                .load(card.imageUrl)
+                .error(ContextCompat.getDrawable(this, R.drawable.tree))
+                .into(imageView)
         }
 
-        bottomSheetDialog.findViewById<ImageView>(R.id.iv_card_image_picker)?.setOnClickListener {
+        imagePickerImageView?.setOnClickListener {
             bottomSheetDialog.dismiss()
             openImagePicker()
         }
 
         bottomSheetDialog.findViewById<TextView>(R.id.tv_ok)?.setOnClickListener {
-            val configuredCard = CardModel(title?.text.toString(), imageUrl?.text.toString())
-            card?.let {
-                configuredCard.id = card.id
-            }
-            cardViewModel.insert(configuredCard)
+            val configuredCard =
+                CardModel(titleTextView?.text.toString(), imageUrlTextView?.text.toString())
+            configuredCard.id = card.id
+            cardViewModel.insertCardToCardRepository(configuredCard)
             bottomSheetDialog.dismiss()
         }
 
@@ -115,8 +117,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomSheetDialog.setOnCancelListener {
-            cardViewModel.selectedCard.value = null
+            cardViewModel.setAdjustingCardItem(null)
         }
+
         bottomSheetDialog.show()
     }
 
@@ -124,16 +127,5 @@ class MainActivity : AppCompatActivity() {
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.type = "image/*"
         galleryResultLauncher.launch(photoPickerIntent)
-    }
-
-    private fun onImageSelectedFromGallery(intent: Intent?) {
-        intent?.let {
-            val imageUri: Uri? = intent.data
-            val card: CardModel? = cardViewModel.selectedCard.value
-            card?.let {
-                card.imageUrl = imageUri.toString()
-            }
-            showCardConfigurationDialog(card)
-        }
     }
 }
