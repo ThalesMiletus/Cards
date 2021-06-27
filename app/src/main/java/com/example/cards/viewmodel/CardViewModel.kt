@@ -9,23 +9,25 @@ import kotlinx.coroutines.launch
 class CardViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     val allCards: LiveData<List<CardModel>> = cardRepository.allCards.asLiveData()
-    var editingCard: MutableLiveData<CardModel> = MutableLiveData()
+    private val _editingCard = MutableLiveData<CardModel?>()
+    val editingCard: LiveData<CardModel?>
+        get() = _editingCard
 
     fun insertCardToCardRepository(cardModel: CardModel) = viewModelScope.launch {
         cardRepository.insert(cardModel)
     }
 
     fun setAdjustingCardItem(card: CardModel?) {
-        editingCard.value = card
+        _editingCard.value = card
     }
 
     fun setAdjustingCardItemUrl(imageUri: Uri?) {
         imageUri?.let {
-            val card: CardModel? = editingCard.value?.copy()
+            val card: CardModel? = _editingCard.value?.copy()
             card?.apply {
                 imageUrl = imageUri.toString()
-                id = editingCard.value?.id
-                editingCard.value = this
+                id = _editingCard.value?.id
+                _editingCard.value = this
             }
         }
     }
