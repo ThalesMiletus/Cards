@@ -35,8 +35,10 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             hideKeyboard()
                             clearFocus()
-                            cardModel.title = text.toString()
-                            viewModel.insertCardToCardRepository(cardModel)
+                            if (cardModel.title != text.toString()) {
+                                cardModel.title = text.toString()
+                                viewModel.insertCardToCardRepository(cardModel)
+                            }
                         }
                         (actionId == EditorInfo.IME_ACTION_DONE)
                     }
