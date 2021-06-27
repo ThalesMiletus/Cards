@@ -61,7 +61,7 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
 
     class CardsComparator : DiffUtil.ItemCallback<CardModel>() {
         override fun areItemsTheSame(oldItem: CardModel, newItem: CardModel): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: CardModel, newItem: CardModel): Boolean {

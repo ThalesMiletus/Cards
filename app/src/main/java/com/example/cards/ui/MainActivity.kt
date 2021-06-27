@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<RecyclerView>(R.id.rv_cards).apply {
             adapter = cardsRvAdapter
             layoutManager = GridLayoutManager(this@MainActivity, AppConfig.CARD_RV_SPAN_COUNT)
-            itemAnimator = null
         }
     }
 
