@@ -2,11 +2,13 @@ package com.example.cards.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cards.databinding.RvItemCardBinding
 import com.example.cards.model.CardModel
+import com.example.cards.util.hideKeyboard
 import com.example.cards.viewmodel.CardViewModel
 
 class CardListAdapter(private val cardViewModel: CardViewModel) :
@@ -28,6 +30,15 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
         fun bind(card: CardModel, cardViewModel: CardViewModel) {
             binding.card = card
             binding.cardViewModel = cardViewModel
+            binding.edtCardTitle.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    binding.edtCardTitle.hideKeyboard()
+                    binding.edtCardTitle.clearFocus()
+                    card.title = binding.edtCardTitle.text.toString()
+                    cardViewModel.insert(card)
+                }
+                (actionId == EditorInfo.IME_ACTION_DONE)
+            }
             binding.executePendingBindings()
         }
 

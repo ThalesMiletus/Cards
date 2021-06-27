@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/rv_card_item_margin"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:background="@drawable/shape_border_gray">
 
         <androidx.constraintlayout.widget.Guideline
@@ -57,7 +59,7 @@
             android:layout_marginTop="@dimen/rv_card_item_title_top_margin"
             android:background="@drawable/shape_border_white"
             android:ellipsize="end"
-            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="@integer/rv_cards_item_title_max_lines"
             android:padding="@dimen/rv_card_item_title_padding"
