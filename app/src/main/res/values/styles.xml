@@ -11,7 +11,7 @@
 
     <style name="ConfigDialogEditTextsStyle" parent="android:Widget.EditText">
         <item name="android:ellipsize">end</item>
-        <item name="android:imeActionLabel">Done</item>
+        <item name="android:imeOptions">actionDone</item>
         <item name="android:inputType">text</item>
         <item name="android:maxLines">@integer/dialog_card_config_url_max_lines</item>
     </style>
