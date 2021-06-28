@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.cards.config.AppConfig
 import com.example.cards.room.CardRoomDatabase
+import com.example.cards.ui.CardListAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,4 +46,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideCardDao(db: CardRoomDatabase) = db.cardDao()
+
+    @Provides
+    @Singleton
+    fun provideAdapter(): CardListAdapter = CardListAdapter()
 }

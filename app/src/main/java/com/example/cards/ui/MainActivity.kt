@@ -21,6 +21,7 @@ import com.example.cards.model.CardModel
 import com.example.cards.viewmodel.CardViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -35,9 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     private val cardViewModel: CardViewModel by viewModels()
 
-    private val cardsRvAdapter by lazy {
-        CardListAdapter(cardViewModel)
-    }
+    @Inject
+    lateinit var cardsRvAdapter: CardListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCardsRv() {
+        cardsRvAdapter.setCardViewModel(cardViewModel)
         findViewById<RecyclerView>(R.id.rv_cards).apply {
             adapter = cardsRvAdapter
             layoutManager = GridLayoutManager(this@MainActivity, AppConfig.CARD_RV_SPAN_COUNT)

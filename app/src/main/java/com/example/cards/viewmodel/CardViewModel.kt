@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CardViewModel  @Inject constructor (private val cardRepository: CardRepository) : ViewModel() {
+class CardViewModel @Inject constructor(private val cardRepository: CardRepository) : ViewModel() {
 
     val allCards: LiveData<List<CardModel>> = cardRepository.allCards.asLiveData()
     private val _editingCard = MutableLiveData<CardModel?>()
@@ -33,15 +33,5 @@ class CardViewModel  @Inject constructor (private val cardRepository: CardReposi
                 _editingCard.value = this
             }
         }
-    }
-}
-
-class CardViewModelFactory(private val repository: CardRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CardViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return CardViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

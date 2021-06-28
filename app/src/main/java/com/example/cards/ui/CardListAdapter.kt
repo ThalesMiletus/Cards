@@ -11,8 +11,9 @@ import com.example.cards.model.CardModel
 import com.example.cards.util.hideKeyboard
 import com.example.cards.viewmodel.CardViewModel
 
-class CardListAdapter(private val cardViewModel: CardViewModel) :
-    ListAdapter<CardModel, CardListAdapter.CardViewHolder>(CardsComparator()) {
+class CardListAdapter : ListAdapter<CardModel, CardListAdapter.CardViewHolder>(CardsComparator()) {
+
+    private var cardViewModel: CardViewModel? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder.from(parent)
@@ -22,11 +23,15 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
         holder.bind(getItem(position), cardViewModel)
     }
 
+    fun setCardViewModel(viewModel: CardViewModel) {
+        cardViewModel = viewModel
+    }
+
     class CardViewHolder(view: RvItemCardBinding) : RecyclerView.ViewHolder(view.root) {
 
         private var binding: RvItemCardBinding = view
 
-        fun bind(cardModel: CardModel, viewModel: CardViewModel) {
+        fun bind(cardModel: CardModel, viewModel: CardViewModel?) {
             binding.apply {
                 card = cardModel
                 cardViewModel = viewModel
@@ -37,7 +42,7 @@ class CardListAdapter(private val cardViewModel: CardViewModel) :
                             clearFocus()
                             if (cardModel.title != text.toString()) {
                                 cardModel.title = text.toString()
-                                viewModel.insertCardToCardRepository(cardModel)
+                                viewModel?.insertCardToCardRepository(cardModel)
                             }
                         }
                         (actionId == EditorInfo.IME_ACTION_DONE)
