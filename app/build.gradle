@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -63,4 +64,15 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+
+    //Hilt
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+}
+
+kapt {
+    javacOptions {
+        option("-Adagger.fastInit=ENABLED")
+        option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+    }
 }

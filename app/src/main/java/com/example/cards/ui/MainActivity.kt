@@ -15,14 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.cards.CardsApplication
 import com.example.cards.R
 import com.example.cards.config.AppConfig
 import com.example.cards.model.CardModel
 import com.example.cards.viewmodel.CardViewModel
-import com.example.cards.viewmodel.CardViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val galleryResultLauncher = registerForActivityResult(
@@ -33,9 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val cardViewModel: CardViewModel by viewModels {
-        CardViewModelFactory((application as CardsApplication).cardRepository)
-    }
+    private val cardViewModel: CardViewModel by viewModels()
 
     private val cardsRvAdapter by lazy {
         CardListAdapter(cardViewModel)

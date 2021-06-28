@@ -4,9 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.*
 import com.example.cards.model.CardModel
 import com.example.cards.repository.CardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CardViewModel(private val cardRepository: CardRepository) : ViewModel() {
+@HiltViewModel
+class CardViewModel  @Inject constructor (private val cardRepository: CardRepository) : ViewModel() {
 
     val allCards: LiveData<List<CardModel>> = cardRepository.allCards.asLiveData()
     private val _editingCard = MutableLiveData<CardModel?>()

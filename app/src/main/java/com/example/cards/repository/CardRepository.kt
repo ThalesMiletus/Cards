@@ -4,8 +4,9 @@ import androidx.annotation.WorkerThread
 import com.example.cards.model.CardModel
 import com.example.cards.room.CardDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class CardRepository(private val cardDao: CardDao) {
+class CardRepository @Inject constructor (private val cardDao: CardDao) {
 
     val allCards: Flow<List<CardModel>> = cardDao.getAllCards()
 
