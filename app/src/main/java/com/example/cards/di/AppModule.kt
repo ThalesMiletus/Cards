@@ -14,7 +14,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
-
 import javax.inject.Singleton
 
 @Module
@@ -35,7 +34,7 @@ object AppModule {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
                     CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                        cardRoomDatabase.populateCardsDatabase(cardRoomDatabase.cardDao())
+                        cardRoomDatabase.populateCardsDatabase()
                     }
                 }
             })
